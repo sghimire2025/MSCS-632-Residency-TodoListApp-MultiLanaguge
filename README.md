@@ -172,7 +172,7 @@ cd TodoListApp-Java
 
 **Windows (PowerShell or GitBash)**
 ```bat
-./gradlew clean install
+./gradlew clean build
 ./gradlew.bat bootRun
 ```
 
@@ -212,7 +212,7 @@ curl "http://localhost:8080/api/tasks?userId=1"
 
 ---
 
-## 2) `TodoListApp-JS` – Client App (Placeholder)
+## 2) `todolistapp-js` – Client App 
 
 This is a placeholder for the JavaScript UI that will consume the REST API above.
 
@@ -221,7 +221,32 @@ This is a placeholder for the JavaScript UI that will consume the REST API above
 - `.env` for API base URL (e.g., `VITE_API_URL=http://localhost:8080`)
 - Fetch layer (axios or `fetch`) + simple query caching
 
+## How to run `todolistapp-js` locally
+Make sure to run the backend before you run this application.
 
+Change the directory
+```bash
+cd todolistapp-js
+```
+Install the required dependency and run it on dev mode
+```bash
+npm install
+npm run dev
+```
+The application will be running on
+```link
+http://localhost:5173/
+```
+If you would like to run the production ready then build the app and run the js and html from `dist` folder
+
+```bash
+npm run build
+npm run preview
+```
+The application preview mode will run on 
+```link
+http://localhost:4173/
+```
 
 ---
 
