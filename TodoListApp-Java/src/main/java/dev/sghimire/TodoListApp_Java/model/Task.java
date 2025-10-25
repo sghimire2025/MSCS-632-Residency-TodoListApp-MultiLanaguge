@@ -1,6 +1,9 @@
 package dev.sghimire.TodoListApp_Java.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -21,6 +24,7 @@ public class Task {
     // Map to Postgres enum `task_status`
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, columnDefinition = "task_status")
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
     private TaskStatus status = TaskStatus.PENDING;
 
     @ManyToOne(fetch = FetchType.LAZY)

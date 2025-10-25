@@ -51,28 +51,75 @@ TodoListApp-MultiLanguage/
 - Simple validation, service layer, repository interfaces, and integration tests stubs.
 
 
-### API Endpoints (sample)
-```
-GET    /api/catagory
-POST   /api/catagory
-PUT    /api/catagory/{id}
-DELETE /api/catagory/{id}
+### **Category **
+| Method | Endpoint | Description |
+|---------|-----------|-------------|
+| **GET** | `/api/categories` | Fetch all available categories |
+| **POST** | `/api/categories` | Create a new category (auto-dedupes by name) |
+| **PUT** | `/api/categories/{id}` | *(optional)* Update a category name |
+| **DELETE** | `/api/categories/{id}` | *(optional)* Delete a category |
 
-GET    /api/tasks?userId={userId}
-POST   /api/tasks
-GET    /api/tasks/{id}
-PUT    /api/tasks/{id}
-DELETE /api/tasks/{id}
-```
-**Example request body (create task):**
+#### **Sample Request (POST)**
 ```json
 {
-  "title": "Buy milk",
-  "description": "2% milk, half gallon",
-  "status": "PENDING",
-  "userId": 1
+  "name": "Work"
 }
 ```
+
+---
+
+### **Task **
+| Method | Endpoint | Description |
+|---------|-----------|-------------|
+| **GET** | `/api/tasks` | Get all tasks (optionally filter by `status`) |
+| **GET** | `/api/tasks?userId={userId}` | Get tasks created or assigned to a specific user |
+| **GET** | `/api/tasks/assignee/{userId}` | Get tasks assigned to a particular user |
+| **POST** | `/api/tasks` | Create a new task |
+| **GET** | `/api/tasks/{id}` | Retrieve a single task by ID |
+| **PUT** | `/api/tasks/{id}` | Update task details (supports optimistic locking) |
+| **DELETE** | `/api/tasks/{id}` | *(optional)* Delete a task |
+
+#### 🧾 **Sample Request (POST)**
+```json
+{
+  "title": "Finish project documentation",
+  "description": "Write and review the README and API usage guide for TodoListApp.",
+  "categoryId": 1,
+  "assigneeId": 2,
+  "dueDate": "2025-10-30T17:00:00"
+}
+```
+
+> **Header:**  
+> `X-User-Id: 1` → identifies the creator (defaults to user `1` if not provided)
+
+---
+
+### **User**
+| Method | Endpoint | Description |
+|---------|-----------|-------------|
+| **GET** | `/api/users` | Retrieve all users |
+| **GET** | `/api/users/{id}` | Retrieve a specific user |
+| **POST** | `/api/users` | Create a new user |
+| **PUT** | `/api/users/{id}` | Update user information |
+| **DELETE** | `/api/users/{id}` | Delete a user |
+
+#### **Sample Request (POST)**
+```json
+{
+  "name": "Suresh Ghimire",
+  "email": "suresh@example.com"
+}
+```
+
+---
+### **Error Handling**
+| Status Code | Description | Example |
+|--------------|-------------|----------|
+| **400** | Bad Request | `{ "message": "Email already exists: suresh@example.com" }` |
+| **404** | Not Found | `{ "message": "Task not found: 5" }` |
+| **409** | Conflict | `{ "message": "Update conflict: Version mismatch" }` |
+
 
 ### Prerequisites
 - **JDK 17+** installed and on `PATH`
