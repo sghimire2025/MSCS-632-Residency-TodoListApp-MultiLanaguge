@@ -87,7 +87,7 @@ The project is using PostgresSQL database and the database properties are listed
 Use the following link to clone the application from github repository
 
 ```bash
-git clone https://github.com/sghimire2025/MSCS-632-Residency-TodoListApp-MultiLanaguge/tree/main
+git clone https://github.com/sghimire2025/MSCS-632-Residency-TodoListApp-MultiLanaguge.git
 ```
 Change the directory
 ```bash
