@@ -1,3 +1,10 @@
 TodoListApp-Java.iml
 TodoListApp-MultiLanguage.iml
 .idea/*
+
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/**/build/
+**/build/
+**/bin/
