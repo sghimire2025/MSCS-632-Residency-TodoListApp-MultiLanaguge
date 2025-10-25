@@ -40,7 +40,7 @@ TodoListApp-MultiLanguage/
 ## 1) `TodoListApp-Java` – Spring Boot API
 
 ### Tech
-- Java 17+
+- Java 21+
 - Spring Boot 3.x (Web, Data JPA, Validation)
 - PostgreSQL
 - Gradle Wrapper
