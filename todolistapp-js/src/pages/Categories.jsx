@@ -11,6 +11,7 @@ export default function Categories() {
   useEffect(() => {
     (async () => {
       try {
+        setLoading(true);
         const res = await client.get("/categories");
         setList(res.data);
       } catch (e) {
@@ -24,12 +25,27 @@ export default function Categories() {
   async function create(e) {
     e.preventDefault();
     setErr("");
+    const trimmed = name.trim();
+    if (!trimmed) {
+      setErr("Category name is required");
+      return;
+    }
     try {
-      const res = await client.post("/categories", { name });
-      // service returns existing if duplicate
-      const exists = list.some((c) => c.id === res.data.id);
-      setList(exists ? list : [res.data, ...list]);
+      const res = await client.post("/categories", { name: trimmed });
+      // Service may return existing category; avoid duplicates
+      setList((cur) => (cur.some((c) => c.id === res.data.id) ? cur : [res.data, ...cur]));
       setName("");
+    } catch (e) {
+      setErr(e.message);
+    }
+  }
+
+  async function remove(id) {
+    if (!confirm("Delete this category?")) return;
+    setErr("");
+    try {
+      await client.delete(`/categories/${id}`);
+      setList((cur) => cur.filter((c) => c.id !== id));
     } catch (e) {
       setErr(e.message);
     }
@@ -37,7 +53,10 @@ export default function Categories() {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-semibold">Categories</h1>
+      <header>
+        <h1 className="text-2xl font-semibold">Categories</h1>
+        <p className="text-sm text-gray-600">Create and manage task categories.</p>
+      </header>
 
       <form onSubmit={create} className="bg-white rounded-xl shadow p-4 flex gap-2">
         <input
@@ -55,11 +74,21 @@ export default function Categories() {
         {loading ? (
           <Spinner />
         ) : (
-          <ul className="list-disc ml-6">
+          <ul className="divide-y">
             {list.map((c) => (
-              <li key={c.id}>{c.name}</li>
+              <li key={c.id} className="py-2 flex items-center justify-between">
+                <span>{c.name}</span>
+                <button
+                  onClick={() => remove(c.id)}
+                  className="text-red-600 hover:underline"
+                >
+                  Delete
+                </button>
+              </li>
             ))}
-            {list.length === 0 && <li className="text-gray-500 list-none">No categories.</li>}
+            {list.length === 0 && (
+              <li className="py-4 text-gray-500">No categories.</li>
+            )}
           </ul>
         )}
       </section>

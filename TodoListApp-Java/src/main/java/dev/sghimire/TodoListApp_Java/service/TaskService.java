@@ -1,5 +1,6 @@
 package dev.sghimire.TodoListApp_Java.service;
 
+import dev.sghimire.TodoListApp_Java.dto.PageResponse;
 import dev.sghimire.TodoListApp_Java.dto.TaskCreateRequest;
 import dev.sghimire.TodoListApp_Java.dto.TaskResponse;
 import dev.sghimire.TodoListApp_Java.dto.TaskUpdateRequest;
@@ -12,6 +13,8 @@ import dev.sghimire.TodoListApp_Java.repository.TaskRepository;
 import dev.sghimire.TodoListApp_Java.repository.UserAccountRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.OptimisticLockException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -151,6 +154,24 @@ public class TaskService {
         System.out.println("Running recomputeOpenTaskCount on thread: "
                 + Thread.currentThread().getName());
         return CompletableFuture.completedFuture(count);
+    }
+
+    @Transactional(readOnly = true)
+    public PageResponse<TaskResponse> list(TaskStatus status, Pageable pageable) {
+        Page<Task> page = (status == null)
+                ? tasks.findAll(pageable)
+                : tasks.findByStatus(status, pageable);
+
+        var content = page.getContent().stream().map(this::toDto).toList();
+        return new PageResponse<>(
+                content,
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages(),
+                page.isFirst(),
+                page.isLast()
+        );
     }
 
 }

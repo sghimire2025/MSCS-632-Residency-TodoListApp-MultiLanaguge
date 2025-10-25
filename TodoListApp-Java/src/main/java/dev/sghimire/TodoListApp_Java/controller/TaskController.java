@@ -1,13 +1,13 @@
 package dev.sghimire.TodoListApp_Java.controller;
 
-import dev.sghimire.TodoListApp_Java.dto.ApiError;
-import dev.sghimire.TodoListApp_Java.dto.TaskCreateRequest;
-import dev.sghimire.TodoListApp_Java.dto.TaskResponse;
-import dev.sghimire.TodoListApp_Java.dto.TaskUpdateRequest;
+import dev.sghimire.TodoListApp_Java.dto.*;
 import dev.sghimire.TodoListApp_Java.model.TaskStatus;
 import dev.sghimire.TodoListApp_Java.service.TaskService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.OptimisticLockException;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,9 +35,17 @@ public class TaskController {
         return service.update(id, req);
     }
 
+//    @GetMapping
+//    public List<TaskResponse> list(@RequestParam(required = false) TaskStatus status) {
+//        return service.list(status);
+//    }
+
     @GetMapping
-    public List<TaskResponse> list(@RequestParam(required = false) TaskStatus status) {
-        return service.list(status);
+    public PageResponse<TaskResponse> list(
+            @RequestParam(required = false) TaskStatus status,
+            @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
+    ) {
+        return service.list(status, pageable);
     }
 
     @GetMapping("/assignee/{userId}")

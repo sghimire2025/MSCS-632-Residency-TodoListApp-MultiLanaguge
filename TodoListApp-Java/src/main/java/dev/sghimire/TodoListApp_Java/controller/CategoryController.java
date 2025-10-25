@@ -26,4 +26,9 @@ public class CategoryController {
     public List<Category> all() {
         return service.findAll();
     }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Integer id) {
+        service.delete(id);
+    }
 }
