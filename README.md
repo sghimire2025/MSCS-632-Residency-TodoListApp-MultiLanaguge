@@ -224,7 +224,10 @@ This is a placeholder for the JavaScript UI that will consume the REST API above
 ## How to run `todolistapp-js` locally
 Make sure to run the backend before you run this application.
 
-Change the directory
+### Requirements
+Any device with `node` version greater than `node:18.2.0`
+
+Change the directory from the root path `/TodoListApp-MultiLanguage`
 ```bash
 cd todolistapp-js
 ```
