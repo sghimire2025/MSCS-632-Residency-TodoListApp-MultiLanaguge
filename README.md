@@ -4,7 +4,7 @@ This is project for the course `MSCS-632 Advanced Programming Language` residenc
 A simple multi-repo style workspace that hosts two independent apps that can share the same PostgreSQL database:
 
 - **`TodoListApp-Java`** – Spring Boot REST API (Gradle project)
-- **`TodoListApp-JS`** – Placeholder for a JavaScript client (to be added later)
+- **`todolistapp-js`** – Placeholder for a JavaScript client (to be added later)
 
 Both projects are designed to run independently. The Java API exposes CRUD endpoints for Users and Tasks; the JS app will later consume these APIs.
 
@@ -32,8 +32,8 @@ TodoListApp-MultiLanguage/
 │  ├─ settings.gradle
 │  ├─ gradlew / gradlew.bat         
 │  └─ HELP.md
-├─ TodoListApp-JS/                  #JS client app
-│  └─ src/
+├─ todolistapp-js/                  #JS client app
+│  └─ app/
 ├─ README.md                        
 ```
 
