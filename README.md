@@ -79,7 +79,7 @@ TodoListApp-MultiLanguage/
 | **PUT** | `/api/tasks/{id}` | Update task details (supports optimistic locking) |
 | **DELETE** | `/api/tasks/{id}` | *(optional)* Delete a task |
 
-#### 🧾 **Sample Request (POST)**
+####  **Sample Request (POST)**
 ```json
 {
   "title": "Finish project documentation",
@@ -129,6 +129,35 @@ TodoListApp-MultiLanguage/
 ### Configure Database
 The project is using PostgresSQL database and the database properties are listed on `application.yaml`
 
+### Concurrency and Thread safe
+The endpoint `/api/tasks/assignee/{userId}/recompute-open-count` runs an asynchronous computation in the background to count **pending tasks** assigned to a given user.
+
+It leverages:
+
+- `@Async` annotation to execute logic on a **separate thread**.
+- `CompletableFuture<Integer>` return type to handle **non-blocking** async results.
+- Thread-pool management via Spring Boot’s `@EnableAsync` configuration.
+
+---
+
+**Call the endpoint in two terminals simultaneously:**
+
+   ```bash
+   # Terminal 1
+   curl http://localhost:8080/api/tasks/assignee/1/recompute-open-count
+
+   # Terminal 2
+   curl http://localhost:8080/api/tasks/assignee/2/recompute-open-count
+   ```
+**Observe logs:**  
+   You should see lines like:
+   ```
+   Running recomputeOpenTaskCount on thread: task-1
+   Running recomputeOpenTaskCount on thread: task-2
+   ```
+
+   This confirms that the computations run **concurrently** on different threads.
+---
 
 ### How to run the application
 Use the following link to clone the application from github repository

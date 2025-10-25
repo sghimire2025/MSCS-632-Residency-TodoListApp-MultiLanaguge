@@ -12,12 +12,14 @@ import dev.sghimire.TodoListApp_Java.repository.TaskRepository;
 import dev.sghimire.TodoListApp_Java.repository.UserAccountRepository;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.OptimisticLockException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class TaskService {
@@ -129,12 +131,27 @@ public class TaskService {
                 t.getDescription(),
                 t.getStatus(),
                 t.getCategory() != null ? t.getCategory().getId() : null,
+                t.getCategory() != null ? t.getCategory().getName() : null,
                 t.getAssignee() != null ? t.getAssignee().getId() : null,
+                t.getAssignee() != null ? t.getAssignee().getName() : null,
                 t.getCreatedBy() != null ? t.getCreatedBy().getId() : null,
+                t.getCreatedBy() != null ? t.getCreatedBy().getName() : null,
                 t.getDueDate(),
                 t.getCompletedAt(),
                 t.getVersion()
         );
     }
+
+    @Async
+    public CompletableFuture<Integer> recomputeOpenTaskCount(Integer userId) {
+        var user = findUser(userId);
+        int count = tasks.findByAssignee(user).stream()
+                .mapToInt(t -> t.getStatus() == TaskStatus.PENDING ? 1 : 0)
+                .sum();
+        System.out.println("Running recomputeOpenTaskCount on thread: "
+                + Thread.currentThread().getName());
+        return CompletableFuture.completedFuture(count);
+    }
+
 }
 
