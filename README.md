@@ -1,6 +1,6 @@
 
 # TodoListApp–MultiLanguage 
-This is project for the course `MSCS-631 Advanced Programming Language` residency project on `Cross Language Application Development`. 
+This is project for the course `MSCS-632 Advanced Programming Language` residency project on `Cross Language Application Development`. 
 A simple multi-repo style workspace that hosts two independent apps that can share the same PostgreSQL database:
 
 - **`TodoListApp-Java`** – Spring Boot REST API (Gradle project)
