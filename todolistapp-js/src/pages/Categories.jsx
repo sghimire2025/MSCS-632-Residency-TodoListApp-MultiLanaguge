@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import client from "../api/client";
 import Spinner from "../components/Spinner";
+import { toast } from "react-hot-toast";
 
 export default function Categories() {
   const [list, setList] = useState([]);
@@ -27,27 +28,33 @@ export default function Categories() {
     setErr("");
     const trimmed = name.trim();
     if (!trimmed) {
-      setErr("Category name is required");
+      toast.error("Category name is required");
       return;
     }
+    const t = toast.loading("Saving category...");
     try {
       const res = await client.post("/categories", { name: trimmed });
-      // Service may return existing category; avoid duplicates
-      setList((cur) => (cur.some((c) => c.id === res.data.id) ? cur : [res.data, ...cur]));
+      setList((cur) =>
+        cur.some((c) => c.id === res.data.id) ? cur : [res.data, ...cur]
+      );
       setName("");
+      toast.success("Category saved", { id: t });
     } catch (e) {
       setErr(e.message);
+      toast.error(e.message || "Failed to save", { id: t });
     }
   }
 
   async function remove(id) {
     if (!confirm("Delete this category?")) return;
-    setErr("");
+    const t = toast.loading("Deleting category...");
     try {
       await client.delete(`/categories/${id}`);
       setList((cur) => cur.filter((c) => c.id !== id));
+      toast.success("Category deleted", { id: t });
     } catch (e) {
       setErr(e.message);
+      toast.error(e.message || "Delete failed", { id: t });
     }
   }
 
@@ -55,17 +62,24 @@ export default function Categories() {
     <div className="space-y-6">
       <header>
         <h1 className="text-2xl font-semibold">Categories</h1>
-        <p className="text-sm text-gray-600">Create and manage task categories.</p>
+        <p className="text-sm text-gray-600">
+          Create and manage task categories.
+        </p>
       </header>
 
-      <form onSubmit={create} className="bg-white rounded-xl shadow p-4 flex gap-2">
+      <form
+        onSubmit={create}
+        className="bg-white rounded-xl shadow p-4 flex gap-2"
+      >
         <input
           className="border rounded p-2 flex-1"
           placeholder="New category name"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
-        <button className="bg-gray-900 text-white px-4 py-2 rounded">Add</button>
+        <button className="bg-gray-900 text-white px-4 py-2 rounded">
+          Add
+        </button>
       </form>
 
       <section className="bg-white rounded-xl shadow p-4">

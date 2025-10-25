@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import client from "../api/client";
 import Spinner from "../components/Spinner";
+import { toast } from "react-hot-toast";
 
 export default function Users() {
   const [list, setList] = useState([]);
@@ -28,26 +29,31 @@ export default function Users() {
     const name = form.name.trim();
     const email = form.email.trim();
     if (!name || !email) {
-      setErr("Name and email are required");
+      toast.error("Name and email are required");
       return;
     }
+    const t = toast.loading("Creating user...");
     try {
       const res = await client.post("/users", { name, email });
       setList((cur) => [res.data, ...cur]);
       setForm({ name: "", email: "" });
+      toast.success("User created", { id: t });
     } catch (e) {
       setErr(e.message);
+      toast.error(e.message || "Create failed", { id: t });
     }
   }
 
   async function remove(id) {
     if (!confirm("Delete this user?")) return;
-    setErr("");
+    const t = toast.loading("Deleting user...");
     try {
       await client.delete(`/users/${id}`);
       setList((cur) => cur.filter((u) => u.id !== id));
+      toast.success("User deleted", { id: t });
     } catch (e) {
       setErr(e.message);
+      toast.error(e.message || "Delete failed", { id: t });
     }
   }
 
@@ -58,7 +64,10 @@ export default function Users() {
         <p className="text-sm text-gray-600">Create and manage users.</p>
       </header>
 
-      <form onSubmit={create} className="bg-white rounded-xl shadow p-4 grid gap-3 md:grid-cols-3">
+      <form
+        onSubmit={create}
+        className="bg-white rounded-xl shadow p-4 grid gap-3 md:grid-cols-3"
+      >
         <input
           className="border rounded p-2"
           placeholder="Full name"
@@ -71,7 +80,9 @@ export default function Users() {
           value={form.email}
           onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
         />
-        <button className="bg-gray-900 text-white px-4 py-2 rounded">Create</button>
+        <button className="bg-gray-900 text-white px-4 py-2 rounded">
+          Create
+        </button>
       </form>
 
       <section className="bg-white rounded-xl shadow p-4">
